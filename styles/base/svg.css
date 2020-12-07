@@ -1,0 +1,15 @@
+/**
+ * Change fill color to match the text color in all browsers.
+ */
+
+svg:not([fill]) {
+  @apply fill-current;
+}
+
+/**
+ * Limit the width to the size of the viewport in all browsers.
+ */
+
+svg {
+  @apply max-w-full;
+}
