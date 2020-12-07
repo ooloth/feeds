@@ -1,0 +1,23 @@
+/** 
+ * Base 
+ */
+
+@import 'tailwindcss/base';
+
+@import './base/document.css';
+@import './base/a11y.css';
+@import './base/form.css';
+@import './base/interaction.css';
+@import './base/svg.css';
+
+/** 
+ * Components
+ */
+
+@import 'tailwindcss/components';
+
+/** 
+ * Utilities 
+ */
+
+@import 'tailwindcss/utilities';
