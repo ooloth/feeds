@@ -1,5 +1,7 @@
 import { useState, useEffect, useContext, createContext } from 'react'
+
 import firebase from './client'
+import { createUser } from './db'
 
 const AuthContext = createContext(null)
 
@@ -9,60 +11,52 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>
 }
 
-export const useAuth = () => {
-  return useContext(AuthContext)
-}
+export const useAuth = () => useContext(AuthContext)
 
 function useProvideAuth() {
   const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
 
   const handleUser = rawUser => {
     if (rawUser) {
       const user = formatUser(rawUser)
-      setLoading(false)
+
+      createUser(user.uid, user)
       setUser(user)
       return user
     } else {
-      setLoading(false)
-      setUser(false)
-      return false
+      setUser(null)
+      return null
     }
   }
 
-  const signinWithGoogle = () => {
-    setLoading(true)
-    return firebase
+  const signinWithGoogle = () =>
+    firebase
       .auth()
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
       .then(response => handleUser(response.user))
-  }
 
-  const signout = () => {
-    return firebase
+  const signout = () =>
+    firebase
       .auth()
       .signOut()
-      .then(() => handleUser(false))
-  }
+      .then(() => handleUser(null))
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(handleUser)
-    return () => unsubscribe()
+    return unsubscribe
   }, [])
 
   return {
     user,
-    loading,
     signinWithGoogle,
     signout,
   }
 }
 
-const formatUser = user => {
-  return {
-    uid: user.uid,
-    email: user.email,
-    name: user.displayName,
-    provider: user.providerData[0].providerId,
-  }
-}
+const formatUser = user => ({
+  uid: user.uid,
+  email: user.email,
+  name: user.displayName,
+  photoUrl: user.photoURL,
+  provider: user.providerData[0].providerId,
+})

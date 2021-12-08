@@ -7,7 +7,7 @@ export default function Index() {
 
   return (
     <Layout>
-      <h1 className="text-9xl font-black">Feeds.</h1>
+      <h1 className="text-9xl tracking-tight font-black">Feeds.</h1>
 
       {auth.user ? (
         <div>Their content</div>
